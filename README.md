@@ -13,3 +13,7 @@ npm install -g carg-tracking-cli
 ```bash
 carg-tracking RR898989899KZ
 ```
+
+### Output
+![output](https://raw.githubusercontent.com/inakiabt/carg-tracking-cli/master/screenshot.png "Output")
+
