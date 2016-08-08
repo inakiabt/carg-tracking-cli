@@ -1,6 +1,6 @@
 {
   "name": "carg-tracking-cli",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Correo Argentino international tracking cli",
   "bin": {
     "carg-tracking": "bin/index.js"
