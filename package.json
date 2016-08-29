@@ -2,6 +2,15 @@
   "name": "carg-tracking-cli",
   "version": "1.3.0",
   "description": "Correo Argentino international tracking cli",
+  "keywords": [
+    "correo",
+    "argentino",
+    "carg"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/inakiabt/carg-tracking-cli.git"
+  },
   "bin": {
     "carg-tracking": "bin/index.js"
   },
