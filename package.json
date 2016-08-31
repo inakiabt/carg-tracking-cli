@@ -16,7 +16,12 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "node_modules/babel-cli/bin/babel.js src --out-dir lib"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "author": "Iñaki Abete",
   "license": "MIT",
@@ -28,5 +33,10 @@
     "request-promise": "^4.1.0",
     "tabletojson": "^0.4.0",
     "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.1",
+    "babel-preset-es2015": "^6.13.1"
   }
 }

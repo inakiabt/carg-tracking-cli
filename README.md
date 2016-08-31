@@ -2,7 +2,7 @@
 Correo Argentino international tracking cli
 
 ## Requirements
-- iTerm2
+- iTerm2 (pull requests for other terminals are welcome)
 
 ## Install
 ```bash

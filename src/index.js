@@ -1,19 +1,21 @@
 'use strict';
 
-let fs = require('fs');
-let Promise = require('bluebird');
-let request = require('request-promise');
-let drawInIterm = require('iterm2-image');
+const Promise = require('bluebird');
+const request = require('request-promise');
+const drawInIterm = require('iterm2-image');
 let prompt = require('prompt');
-let tabletojson = require('tabletojson');
-let Table = require('cli-table');
-let _ = require('underscore');
+const tabletojson = require('tabletojson');
+const Table = require('cli-table');
+const _ = require('underscore');
 
-let req = request.defaults({
+const req = request.defaults({
     jar: true, // save cookies to jar
     rejectUnauthorized: false,
     followAllRedirects: true // allow redirections
 });
+
+prompt.message = '';
+prompt.delimiter = '';
 
 function getImage() {
     return new Promise((resolve, reject) => {
@@ -40,7 +42,14 @@ function getImage() {
 function resolveCaptcha() {
     return new Promise((resolve, reject) => {
         prompt.start();
-        prompt.get(['captcha'], (err, result) => {
+        prompt.get({
+            properties: {
+                captcha: {
+                    description: 'Captcha (case sensitive):',
+                    required: true
+                }
+            }
+        }, (err, result) => {
             if (err) {
                 reject(err);
                 return;
@@ -63,10 +72,12 @@ function getTrackingInfo(trackingId, captcha) {
 }
 
 function showInternationalTrackingInfo(tablesAsJson) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         console.log('International:');
         let keys = Object.keys(tablesAsJson[0]).filter(v => v !== 'Acción');
-        let table = new Table({ head: keys });
+        let table = new Table({
+            head: keys
+        });
 
         tablesAsJson.forEach(val => table.push(_.values(_.omit(val, 'Acción'))));
 
@@ -77,7 +88,7 @@ function showInternationalTrackingInfo(tablesAsJson) {
 }
 
 function showNationalTrackingInfo(tablesAsJson) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         if (!tablesAsJson) {
             resolve();
             return;
@@ -85,7 +96,9 @@ function showNationalTrackingInfo(tablesAsJson) {
 
         console.log('National:');
         let keys = Object.keys(tablesAsJson[0]);
-        let table = new Table({ head: keys });
+        let table = new Table({
+            head: keys
+        });
 
         tablesAsJson.forEach(val => table.push(_.values(_.omit(val, 'Acción'))));
 
@@ -102,12 +115,13 @@ function showTrackingInfo(body) {
             return;
         }
 
-        const fixedBody = body.replace(/<tbody><td>/g, '<tr><td>').replace(/<\/tbody>/g, '</tr>');
+        // Shame on you correargentino.com.ar
+        const fixedBody = body.replace(/<tbody><td>/g, '<tr><td>').replace(/<\/td><\/tbody>/g, '<\/td></tr>');
         let tablesAsJson = tabletojson.convert(fixedBody);
 
         console.log('Results:');
         return showInternationalTrackingInfo(tablesAsJson[0])
-            .then(r => showNationalTrackingInfo(tablesAsJson[1]));
+            .then(() => showNationalTrackingInfo(tablesAsJson[1]));
     });
 }
 
@@ -118,5 +132,5 @@ exports.track = function(trackingId) {
         .then(resolveCaptcha)
         .then(getTrackingInfo.bind(null, trackingId))
         .then(showTrackingInfo)
-        .catch(err => console.error(err))
+        .catch(err => console.error(err));
 };
