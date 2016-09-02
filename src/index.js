@@ -119,6 +119,10 @@ function showTrackingInfo(body) {
         const fixedBody = body.replace(/<tbody><td>/g, '<tr><td>').replace(/<\/td><\/tbody>/g, '<\/td></tr>');
         let tablesAsJson = tabletojson.convert(fixedBody);
 
+        if (tablesAsJson.length === 0) {
+            console.log('No results');
+            return Promise.resolve();
+        }
         console.log('Results:');
         return showInternationalTrackingInfo(tablesAsJson[0])
             .then(() => showNationalTrackingInfo(tablesAsJson[1]));
